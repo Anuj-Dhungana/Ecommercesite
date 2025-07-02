@@ -17,6 +17,7 @@ app.get ('/',(req,res)=>{
 })
 
 app.use('/api',userRoutes)
+app.use('/api/product ',()=>{})
 
 const port = process.env.PORT
 app.listen(port,()=>{
