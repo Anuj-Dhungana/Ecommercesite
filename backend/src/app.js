@@ -2,6 +2,8 @@ import express from 'express';
 import userRoutes from './routes/userRoutes.js'
 import { configDotenv } from 'dotenv';
 import connectDB from './config/db.js';
+import product from './models/product.js';  
+import productRoutes from './routes/productRoutes.js'
 
 const app = express();
 app.use(express.json())
@@ -17,7 +19,7 @@ app.get ('/',(req,res)=>{
 })
 
 app.use('/api',userRoutes)
-app.use('/api/product ',()=>{})
+app.use('/api/product',productRoutes)
 
 const port = process.env.PORT
 app.listen(port,()=>{
