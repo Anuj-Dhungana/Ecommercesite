@@ -34,7 +34,35 @@ const productSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
+    ram: {
+        type: Number,
+       
+    },
+    rom: {
+        type: Number,
+      
+    },
+    display: {
+        type: String,
+        
+    
+    },
+    gen:{
+        type: String,
+       
+    },
+    brand: {
+        type: String,
+    },
+    uses: {
+        type: String,
+       enum:["Gaming","student","professional","performance","budget","all purpose"],
+    },
 
+    processor: {
+        type: String,
+       
+    },
     
 },{
     timestamps: true})
