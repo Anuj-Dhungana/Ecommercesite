@@ -30,22 +30,7 @@ const createProduct =async(req,res)=>{
 
 }
 
-const getAllProducts = async (req, res) => {
 
-try {
-    const data = await  productService.getAllProducts();
-    
-    res.status(200).json({
-        message: "All products fetched successfully",
-        data
-    });
-    
-} catch (error) {
-    console.log(error.message);
-    res.status(400).send("Error occurred while fetching products");
-}
-
-};
 
 const getProductById = async (req, res) => {
     try{
@@ -81,11 +66,30 @@ const deleteProductById = async (req, res) => {
     }
 };
 
+
+    
+const getAllProducts =async(req,res)=>{
+    try {
+
+        console.log(req.query);
+
+        const data = await productService.getAllProducts(req.query);
+
+
+        res.status(200).json({
+            message: "All products fetched successfully",
+            data
+        });
+    } catch (error) {
+        console.log(error.message);
+        res.status(400).send("Error occurred while fetching products");
+    }
+};
+
 const updateProduct = async (req, res) => {
    
     const productId = req.params.id;
     const product = req.body;
-
 
     try {
         const data = await productService.updateProduct(productId, product);
