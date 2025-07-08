@@ -2,6 +2,10 @@ import bcrypt from "bcrypt"
 import User from "../models/User.js"
 
 
+
+
+
+
 const register = async(data) =>{
    const hashedPassword =   bcrypt.hashSync(data.password,10)
   
@@ -21,8 +25,29 @@ const register = async(data) =>{
 
 
 })
-   
+}
+const login = async(data) =>{   
+
+    const doEmailExist = await User.find({email:data.email}) 
+
+    console.log(doEmailExist);
+
+
+    if(!doEmailExist.length>0){
+        throw new Error("user does not exist")
+       
+    }
+
+   const dbpassword = doEmailExist[0].password
+   const isPasswordMatch = bcrypt.compareSync(data.password,dbpassword)
+   if(isPasswordMatch){
+    return doEmailExist[0];}
+   else{
+    throw new Error("password did not match")
+ 
+   }
+
 }
 
 
-export default {register}
+export default {register,login}

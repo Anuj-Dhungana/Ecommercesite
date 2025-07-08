@@ -1,4 +1,8 @@
+
 import authService from "../services/authServices.js";
+import jwt from "jsonwebtoken"
+
+
 
 const register = async (req,res)=>{
 
@@ -33,4 +37,37 @@ const register = async (req,res)=>{
     }
 }
 
-export  {register}
+const login = async (req,res)=>{
+    
+   try{
+     const {email,password} = req.body;
+    if(!email || !password){throw new Error("All fields are required")}
+       
+    const data = await authService.login({email,password})
+
+   const  payload = {
+       id:data._id,
+       userName:data.userName,
+       role:data.role,
+       phone:data.phone,
+       email:data.email
+   }
+
+    const token = jwt.sign(payload,"secretkey");
+
+    res.status(200).json({
+        message: "User logged in successfully",
+        data,
+        token
+    })
+   }catch(error){
+    console.log(error.message);
+    res.status(400).json({
+        message: "Internal server error",error:error.message
+    })
+   }
+   }
+    
+
+
+export  {register,login}
