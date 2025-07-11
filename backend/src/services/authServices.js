@@ -1,9 +1,7 @@
 import bcrypt from "bcrypt"
 import User from "../models/User.js"
-
-
-
-
+import {  sendMail } from "../utils/sendMail.js"
+import { generateotp } from "../utils/generateotp.js"
 
 
 const register = async(data) =>{
@@ -49,5 +47,15 @@ const login = async(data) =>{
 
 }
 
+const forgotpassword = async(data) =>{   
+    const userRegistered = await User.find({email:data.email}) 
+    if(!userRegistered){
+        throw new Error("user does not exist")
+    }
+    const otp = generateotp();
+   sendMail(data.email, otp)
+    return 
+   
+}
 
-export default {register,login}
+export default {register,login,forgotpassword}
