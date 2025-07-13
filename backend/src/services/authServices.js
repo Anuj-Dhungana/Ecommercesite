@@ -4,6 +4,7 @@ import {  sendMail } from "../utils/sendMail.js"
 import { generateotp } from "../utils/generateotp.js"
 
 
+
 const register = async(data) =>{
    const hashedPassword =   bcrypt.hashSync(data.password,10)
   
@@ -53,8 +54,9 @@ const forgotpassword = async(data) =>{
         throw new Error("user does not exist")
     }
     const otp = generateotp();
+    const newotp = await otp.create({email:data.email,otp:otp})
    sendMail(data.email, otp)
-    return 
+    return newotp
    
 }
 
