@@ -1,14 +1,14 @@
-
+import { createToken } from "../helper/Token.js";
+import Otp from "../models/Otp.js";
 import authService from "../services/authServices.js";
-import jwt from "jsonwebtoken"
-import { creatToken } from "../helper/Token.js";
-
+import jwt from "jsonwebtoken";
+import { generateotp } from "../utils/generateotp.js";
 
 const register = async (req,res)=>{
 
     try {
     const {email,phone,password,confirmPassword,userName} = req.body;
-        console.log(email,phone,password,confirmPassword,userName)
+
     if(!password || !email || !phone || !confirmPassword || !userName ){
 
         return res.status(400).json({message: "All fields are required"});
@@ -31,61 +31,70 @@ const register = async (req,res)=>{
         
     } catch (error) {
         console.log(error.message);
-        res.status(500).json({
-            message: "Internal server error",error:error.message
+        res.send(500).json({
+            message: "Internal server error", error: error.message
         })
     }
 }
 
-const login = async (req,res)=>{
-    
-   try{
-     const {email,password} = req.body;
-    if(!email || !password){throw new Error("All fields are required")}
-       
-    const data = await authService.login({email,password})
 
-   const  payload = {
-       id:data._id,
-       userName:data.userName,
-       role:data.role,
-       phone:data.phone,
-       email:data.email
+const login = async (req,res) => {
+    try {
+        //login function
+        const {email,password} = req.body
+
+        if(!email || !password){throw new Error("Missing user credential")}
+
+        const data = await authService.login({email,password})
+        const payload = {
+        id:data._id,
+        userName:data.userName,
+        role:data.role,
+        phone:data.phone,
+        email:data.email
    }
 
-
-    const token = creatToken(payload);
-    res.cookie("authToken",token);
-
+    const token = createToken(payload);
+    res.cookie('authToken',token)
     res.status(200).json({
-        message: "User logged in successfully",
+        message: "Login Successful",
         data,
         token
-    })
-   }catch(error){
-    console.log(error.message);
-    res.status(400).json({
-        message: "Internal server error",error:error.message
-    })
-   }
-   }
-    
-const forgotpassword = async (req,res)=>{
-    try{
-    const {email} = req.body;
-    if(!email){throw new Error("email is required")}
-    const data = await authService.forgotpassword({email})
-
-    res .status(200).json({
-        message: "otp sent successfully",
-        data
-    })}
-    catch(error){
-        console.log(error.message);
-        
+})
+    } catch (error) {
+        console.log(error.message)
+        res.status(400).send(error.message)
     }
-    
+
 }
 
 
-export  {register,login,forgotpassword}
+const forgotPassword = async(req,res)=>{
+    try{
+        const { email } = req.body;
+        console.log("email", email);
+        if(!email){
+            throw new Error("Email is required")
+        }
+        const data = await authService.forgotPassword({email})
+        const otp = generateotp();  //
+        res.send(data);
+    } catch (error){
+        console.log(error.message);
+        res.send(error.message);
+    }
+}
+
+const verifyOtp = async (req, res) => {
+  try {
+    const { email, otp } = req.body;
+
+    const data = await authService.verifyOtp({ email, otp });
+    res.status(200).json({ data });
+  } catch (error) {
+    console.log(error.message);
+    res.send(error.message);
+  }
+};
+
+export {register,login,forgotPassword,verifyOtp}
