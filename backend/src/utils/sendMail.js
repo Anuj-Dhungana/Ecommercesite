@@ -1,4 +1,6 @@
 import nodemailer from 'nodemailer'
+import constant from '../config/constant.js';
+
 
 
 
@@ -8,8 +10,8 @@ const sendMail = async(email,otp)=>{
 const transporter = nodemailer.createTransport({
 service: "gmail",
   auth: {
-    user: "anujdhungana6@gmail.com",
-    pass: 'nkxngtotehiathin',
+    user: constant.EMAIL_USER,
+    pass: constant.EMAIL_PASS,
   },
 });
 

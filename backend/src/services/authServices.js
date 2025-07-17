@@ -2,7 +2,7 @@ import bcrypt from 'bcrypt';
 import User from '../models/User.js';
 import { hashPassword } from '../utils/utility.js';
 import { sendMail } from '../utils/sendMail.js';
-import Otp from '../models/Otp.js';
+import Otp from '../models/otp.js';
 import { generateotp } from '../utils/generateotp.js';
 
 
@@ -73,6 +73,11 @@ const verifyOtp = async ({ email, otp }) => {
     throw new Error("Invalid OTP");
   }
 
+  await User.findOneAndUpdate(
+    {email}, 
+    {otpExpiresAt: new Date(Date.now() + 30 * 1000)}, 
+    {new: true}
+    );
   //optional
   await Otp.deleteOne({ email });
 

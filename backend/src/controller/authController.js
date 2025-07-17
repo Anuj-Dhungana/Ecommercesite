@@ -1,5 +1,5 @@
 import { createToken } from "../helper/Token.js";
-import Otp from "../models/Otp.js";
+import Otp from "../models/otp.js";
 import authService from "../services/authServices.js";
 import jwt from "jsonwebtoken";
 import { generateotp } from "../utils/generateotp.js";
@@ -43,9 +43,12 @@ const login = async (req,res) => {
         //login function
         const {email,password} = req.body
 
-        if(!email || !password){throw new Error("Missing user credential")}
+        if(!email || !password) {
+            throw new Error("Missing user credential")
+        }
 
         const data = await authService.login({email,password})
+        
         const payload = {
         id:data._id,
         userName:data.userName,
@@ -72,12 +75,13 @@ const login = async (req,res) => {
 const forgotPassword = async(req,res)=>{
     try{
         const { email } = req.body;
-        console.log("email", email);
+       
+        res.cookie("userEmail", email)
         if(!email){
             throw new Error("Email is required")
         }
         const data = await authService.forgotPassword({email})
-        const otp = generateotp();  //
+        const otp = generateOTP();  //
         res.send(data);
     } catch (error){
         console.log(error.message);
@@ -87,7 +91,8 @@ const forgotPassword = async(req,res)=>{
 
 const verifyOtp = async (req, res) => {
   try {
-    const { email, otp } = req.body;
+    const { otp } = req.body;
+    const email = req.cookies.userEmail;
 
     const data = await authService.verifyOtp({ email, otp });
     res.status(200).json({ data });

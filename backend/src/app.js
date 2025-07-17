@@ -6,6 +6,7 @@ import product from './models/product.js';
 import productRoutes from './routes/productRoutes.js'
 import authRoutes from './routes/authRoutes.js'
 import cookieParser from 'cookie-parser'
+import cors from 'cors'
 
 const app = express();
 app.use(express.json())
@@ -13,6 +14,11 @@ app.use(express.urlencoded({extended:true}))
 app.use(cookieParser())
 configDotenv();
 connectDB()
+
+app.use(cors({
+    origin:"",
+    credentials:true
+}))
 
 app.get ('/',(req,res)=>{
     res.status(200).json({
