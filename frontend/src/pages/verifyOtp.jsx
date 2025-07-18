@@ -1,9 +1,9 @@
 import React from 'react'
 
-const verifyOtp = () => {
+const VerifyOtp = () => {
   return (
     <div>verifyOtp</div>
   )
 }
 
-export default verifyOtp
+export default VerifyOtp
