@@ -1,15 +1,32 @@
 import { useState } from "react";
 import TextField from "../components/textField";
+import { registerField } from "../components/config/register";
 
 const Register = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [userName, setUserName] = useState("");
-  const [phone, setPhone] = useState("");
+  // const [email, setEmail] = useState("");
+  // const [password, setPassword] = useState("");
+  // const [confirmPassword, setConfirmPassword] = useState("");
+  // const [userName, setUserName] = useState("");
+  // const [phone, setPhone] = useState("");
   
+  const [formData, setFormData] = useState({
+    userName:"",
+    email:"",
+    password:"",
+    confirmPassword:"",
+    phone:""
+  });
+
+  
+
   const handleSubmit = (e) => {
     e.preventDefault();
+    console.log(formData);
+  };
+
+  const handleChange = (e) => {
+    const {name,value} = e.target;
+    setFormData({...formData,[name]:value});
   };
 
   return (
@@ -29,59 +46,24 @@ const Register = () => {
         <div className="bg-white rounded-lg shadow-lg p-8">
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Username */}
-            <div>
-              <TextField 
-                label="Username" 
-                id="username" 
-                placeholder="Enter your username" 
-                value={userName} 
-                onChange={(e) => setUserName(e.target.value)} 
-              />
+            <div className="space-y-4">
+              {registerField.map((field)=>(
+                <TextField
+                key={field.id}
+                label={field.label}
+                id={field.id}
+                name={field.name}
+                placeholder={field.placeholder}
+                value={formData[field.name]}
+                onChange={handleChange}
+                type={field.type}
+                />
+              ))}
+            
             </div>
+            
 
-            {/* Email */}
-            <div>
-              <TextField 
-                label="Email" 
-                id="email" 
-                placeholder="example@gmail.com" 
-                value={email} 
-                onChange={(e) => setEmail(e.target.value)} 
-              />
-            </div>
-
-            {/* Phone */}
-            <div>
-              <TextField 
-                label="Phone" 
-                id="phone" 
-                placeholder="1234567890" 
-                value={phone} 
-                onChange={(e) => setPhone(e.target.value)} 
-              />
-            </div>
-
-            {/* Password */}
-            <div>
-              <TextField 
-                label="Password" 
-                id="password" 
-                placeholder="Enter your password" 
-                value={password} 
-                onChange={(e) => setPassword(e.target.value)} 
-              />
-            </div>
-
-            {/* Confirm Password */}
-            <div>
-              <TextField 
-                label="Confirm Password" 
-                id="confirmPassword" 
-                placeholder="Confirm your password" 
-                value={confirmPassword} 
-                onChange={(e) => setConfirmPassword(e.target.value)} 
-              />
-            </div>
+           
 
             {/* Submit Button */}
             <div>
@@ -94,14 +76,14 @@ const Register = () => {
             </div>
 
             {/* Login Link */}
-            <div className="text-center">
+            {/* <div className="text-center">
               <p className="text-sm text-gray-600">
                 Already have an account?{" "}
                 <a href="/login" className="font-medium text-indigo-600 hover:text-indigo-500 transition duration-200">
                   Sign in here
                 </a>
               </p>
-            </div>
+            </div> */}
           </form>
         </div>
       </div>
