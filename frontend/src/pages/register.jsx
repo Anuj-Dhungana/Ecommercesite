@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import TextField from "../components/textField";
 import { registerField } from "../components/config/register";
+import axios from "axios";
 
 const Register = () => {
   // const [email, setEmail] = useState("");
@@ -17,12 +18,45 @@ const Register = () => {
     phone:""
   });
 
-  
+  useEffect(()=>{
+    const handdleSaveCookie = async ()=>{
+    try{
+     await axios.get("http://localhost:4000/test",{withCredentials:true})
+      console.log(response);
+    }catch(error){
+      console.log(error);
+    };
+    }
+    handdleSaveCookie();
+  },[])
 
-  const handleSubmit = (e) => {
+  const handlePostOperation = async (URL,data) => {
+    try{
+      const result = await axios.post(URL,data);
+      console.log(result);
+      return result;
+    }catch(error){
+      console.log(error);
+      return error;
+    }
+    
+  }
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log(formData);
+
+     const response = await handlePostOperation("http://localhost:4000/api/auth/register",formData);
+     console.log(response);
+     if(response.status === 200){
+      alert("Registration successful");
+     }else{
+      alert("Registration failed");
+     }
   };
+
+
+
 
   const handleChange = (e) => {
     const {name,value} = e.target;

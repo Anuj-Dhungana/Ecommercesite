@@ -6,30 +6,36 @@ import { generateotp } from "../utils/generateotp.js";
 
 const register = async (req,res)=>{
 
+    console.log("object");
+    
     try {
-    const {email,phone,password,confirmPassword,userName} = req.body;
-
-    if(!password || !email || !phone || !confirmPassword || !userName ){
-
-        return res.status(400).json({message: "All fields are required"});
-    }
-
-    if(password !== confirmPassword){
-        return res.status(400).json({message: "password did not match"})
-    }
-    const data = await authService.register({
-        email,
-        phone,
-        password,
-        userName
-    })
-
-    res.status(200).json({
-        message: "User registered successfully",
-        data
-    })
+        const {email,phone,password,confirmPassword,userName} = req.body;
+        
+        if(!password || !email || !phone || !confirmPassword || !userName ){
+            
+            return res.status(400).json({message: "All fields are required"});
+        }
+        
+        console.log("object 2");
+        if(password !== confirmPassword){
+            return res.status(400).json({message: "password did not match"})
+        }
+        const data = await authService.register({
+            email,
+            phone,
+            password,
+            userName
+        })
+        
+        console.log("object 3");
+        console.log("object 3");
+        res.status(200).json({
+            message: "User registered successfully",
+            data
+        })
         
     } catch (error) {
+        console.log("object 3");
         console.log(error.message);
         res.send(500).json({
             message: "Internal server error", error: error.message
