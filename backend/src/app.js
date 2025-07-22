@@ -9,6 +9,7 @@ import cookieParser from 'cookie-parser'
 import cors from 'cors'
 
 
+
 const app = express();
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
@@ -22,10 +23,19 @@ app.use(cors({
 }))
 
 app.get ('/test',(req,res)=>{
-    res.cookie("name","John",{
+    res.cookie("name",{
         maxAge:10*60*1000,
         httpOnly:true,
       
+    })
+    res.status(200).send("cookie set")
+    })
+
+app.get('/api/clear-cookie',(req,res)=>{
+    res.clearCookie("name",{
+        maxAge:10*60*1000,
+        httpOnly:true,
+       
     })
     res.status(200).send("cookie set")
     })

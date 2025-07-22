@@ -1,7 +1,11 @@
 import { useState,useEffect } from "react";
 import TextField from "../components/textField";
-import { registerField } from "../components/config/register";
+import { registerField } from "../config/register";
 import axios from "axios";
+import Cookies from "js-cookie";
+import { handlePostOperation } from "../config/handlepostOperation";
+import { initialValue } from "../config/constants";
+import { BASE_URL } from "../config/constants";
 
 const Register = () => {
   // const [email, setEmail] = useState("");
@@ -9,47 +13,31 @@ const Register = () => {
   // const [confirmPassword, setConfirmPassword] = useState("");
   // const [userName, setUserName] = useState("");
   // const [phone, setPhone] = useState("");
-  
-  const [formData, setFormData] = useState({
-    userName:"",
-    email:"",
-    password:"",
-    confirmPassword:"",
-    phone:""
-  });
+ 
+  const [formData, setFormData] = useState(initialValue);
 
-  useEffect(()=>{
-    const handdleSaveCookie = async ()=>{
-    try{
-     await axios.get("http://localhost:4000/test",{withCredentials:true})
-      console.log(response);
-    }catch(error){
-      console.log(error);
-    };
+   const handdleSaveCookie = async ()=>{
+    Cookies.set("name","value");
+    // try{
+    //  await axios.get("http://localhost:4000/test",{withCredentials:true})
+    //   console.log(response);
+    // }catch(error){
+    //   console.log(error);
+    // };
     }
-    handdleSaveCookie();
-  },[])
 
-  const handlePostOperation = async (URL,data) => {
-    try{
-      const result = await axios.post(URL,data);
-      console.log(result);
-      return result;
-    }catch(error){
-      console.log(error);
-      return error;
-    }
-    
-  }
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log(formData);
 
-     const response = await handlePostOperation("http://localhost:4000/api/auth/register",formData);
+     const response = await handlePostOperation("/auth/register",formData);
      console.log(response);
      if(response.status === 200){
       alert("Registration successful");
+      setFormData(initialValue);
+      
      }else{
       alert("Registration failed");
      }
@@ -63,9 +51,26 @@ const Register = () => {
     setFormData({...formData,[name]:value});
   };
 
+
+  const handleClearCookie = async (e) => {
+
+    Cookies.remove("name");
+    // try {
+    //   await axios.get(`${BASE_URL}/clear-cookie`, { withCredentials: true });
+      
+    // } catch (error) {
+    //   console.log(error);
+    
+    // }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
+
+      <button  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={handleClearCookie}>clear cookie</button>
+
+      <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={handdleSaveCookie}>add cookie</button>
         {/* Header */}
         <div className="text-center">
           <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
