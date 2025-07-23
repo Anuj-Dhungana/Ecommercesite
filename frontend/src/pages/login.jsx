@@ -1,15 +1,39 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
+
+import { handlePostOperation } from "../config/handlepostOperation.js";
+import { initialValue } from "../config/constants.js";
+
+
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(email, password);
+    const Response =await handlePostOperation("auth/login", {email,password});
+    console.log(Response);
+
+    if (Response.status === 200) {
+      alert("Login successful");
+      setFormData(initialValue);
+      localStorage.setItem("authToken", Response.response.data.token);
+
+      setTimeout(() => {
+        Navigate("/");
+      }, 1000);
+
+    } else {
+      alert(Response.response.data.message||"Login failed");
+    }
+
   };
+  const handleChange = (e)=>{
+    const {name,value} = e.target;
+    setFormData({...formData,[name]:value})
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">

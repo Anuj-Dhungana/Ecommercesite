@@ -3,7 +3,9 @@ import { BASE_URL } from "./constants.js"
  
   export const handlePostOperation = async (URL,data) => {
     try{
-      const result = await axios.post(`${BASE_URL}${URL}`,data);
+      const result = await axios.post(`${BASE_URL}${URL}`,data,{
+        withCredentials: true
+      });
     
       return result;
     }catch(error){
