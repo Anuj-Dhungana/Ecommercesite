@@ -3,9 +3,23 @@ import productService from "../services/productServices.js"
 
 const createProduct =async(req,res)=>{
 
-    try {
-    const product =req.body
+    if(!req.file){
+        throw new Error("image is required")
+    }
 
+    console.log(req.file);
+    const filepath = req.file.path
+    const filename = req.file.filename
+    
+    // return res.send(req.file)
+    
+
+ const product =req.body
+
+ product.imageurl = filepath
+ product.imageName = filename
+
+    try {
     if(!product){
         return res.status(400).send("product is required")
     

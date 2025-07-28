@@ -6,11 +6,12 @@ import { deleteProductById } from '../controller/productController.js';
 import { updateProduct } from '../controller/productController.js';
 import { isAdmin } from '../middleware/isAdmin.js';
 import { isLoggedIn } from '../middleware/isLoggedIn.js';
+import { uploads } from '../config/cloudinary.js';
 
 
 const router = express.Router()
 
-router.post('/createproduct',isLoggedIn,isAdmin,createProduct);
+router.post('/createproduct',uploads.single("images"),createProduct);
 router .get('/getallproducts',getAllProducts);
 router.get('/getproductbyid/:id',getProductById);
 router.delete('/deleteproductbyid/:id',isLoggedIn,isAdmin,deleteProductById);

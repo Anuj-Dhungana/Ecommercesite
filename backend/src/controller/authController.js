@@ -87,7 +87,7 @@ const forgotPassword = async(req,res)=>{
             throw new Error("Email is required")
         }
         const data = await authService.forgotPassword({email})
-        const otp = generateOTP();  //
+        const otp = generateotp();  //
         res.send(data);
     } catch (error){
         console.log(error.message);
