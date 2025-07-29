@@ -1,3 +1,4 @@
+import { cloudinary } from "../config/cloudinary.js";
 import Product from "../models/product.js";
 
 
@@ -39,12 +40,23 @@ const getProductById =async(id)=>{
 
 const deleteProductById =async(id)=>{
 
+  const product = await Product.findOne({_id:id})
+   const imageName = product.imageName
+   await cloudinary.uploader.destroy(imageName);
     return await Product.findByIdAndDelete(id);
 };
 
-const updateProduct = async(id,data)=>{
-    return await Product.findByIdAndUpdate(id,data,{new:true});
 
+
+const updateProductById = async (data,id) => {
+    const product = await Product.findById(id);
+
+    if (data.imageName){
+        const oldImageName = product.imageName;
+        await cloudinary.uploader.destroy(oldImageName);
+    }
+
+    return await Product.findByIdAndUpdate(id, data, { new: true});
 }
 
-export default {createProduct,getAllProducts,getProductById,getProductById,deleteProductById,updateProduct}; 
+export default {createProduct,getAllProducts,getProductById,getProductById,deleteProductById,updateProductById}; 

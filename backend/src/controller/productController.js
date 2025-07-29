@@ -100,20 +100,33 @@ const getAllProducts =async(req,res)=>{
     }
 };
 
-const updateProduct = async (req, res) => {
-   
+const updateProductById = async (req, res) => {
+  try {
+
+    if (req.file) {
+
+      console.log(req.file);
+      const newfilepath = req.file.path;
+      const newfilename = req.file.filename;
+      req.body.imageName = newfilename;
+      req.body.imageUrl = newfilepath;
+
+    }
+
+
     const productId = req.params.id;
     const product = req.body;
 
-    try {
-        const data = await productService.updateProduct(productId, product);
-        res.status(200).json({
-            message: "Product updated successfully",
-            data
-        });
-    } catch (error) {
-        console.log(error.message);
-        res.status(400).json("Error occurred while updating product");
-    }
-}
-export  {createProduct ,getAllProducts,getProductById,deleteProductById,updateProduct};
+    const data = await productService.updateProductById(product, productId);
+
+    res.status(200).json({
+      message: "Product updated successfully",
+      data,
+    });
+  } catch (error) {
+    console.log(error.message);
+    res.status(400).send("Error occurred while updating product");
+ }
+};
+
+export  {createProduct ,getAllProducts,getProductById,deleteProductById,updateProductById};
