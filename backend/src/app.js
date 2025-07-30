@@ -6,6 +6,7 @@ import product from './models/product.js';
 import productRoutes from './routes/productRoutes.js'
 import authRoutes from './routes/authRoutes.js'
 import cookieParser from 'cookie-parser'
+import orderRoutes from './routes/orderRoutes.js'
 import cors from 'cors'
 
 
@@ -44,6 +45,7 @@ app.get('/api/clear-cookie',(req,res)=>{
 app.use('/api/user',userRoutes)
 app.use('/api/product',productRoutes)
 app.use('/api/auth',authRoutes)
+app.use('/api/order',orderRoutes)
 
 
 const port = process.env.PORT
