@@ -12,4 +12,20 @@ const getOrderById = async (id) => {
 };
 
 
-export { createOrder, getOrderById };
+const getOrderByuserId = async (id) => {
+  return await order.find({userId:id});
+};   
+
+
+const updateOrderStatus = async (id, status) => {
+  await order.findByIdAndUpdate(id,{orderStatus:status},{new:true})
+  
+}
+
+const UpdatePaymentStatus = async (id, status) => {
+  await order.findByIdAndUpdate(id,{paymentStatus:status},{new:true})
+  
+}
+
+
+export { createOrder, getOrderById, getOrderByuserId, updateOrderStatus,UpdatePaymentStatus };
