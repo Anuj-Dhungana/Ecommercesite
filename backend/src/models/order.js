@@ -51,6 +51,11 @@ const orderSchema = new mongoose.Schema({
         enum: ['cod', 'khalti'],
         
     },
+    totalAmount: {
+        type: Number,
+        required: true
+    },
+    
    
 
 });
