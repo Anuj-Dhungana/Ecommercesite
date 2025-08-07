@@ -4,53 +4,52 @@ import axios from "axios";
 const createOrder = async (req, res) => {
   try {
     const userId = req.user.id;
-
-    console.log(userId.id);
-
     const order = req.body;
-
     order.user = userId;
 
     if (order.paymentMethod === "Khalti") {
-
-      const totalAmount = order.totalAmount
-      
+      const totalAmount = order.totalAmount;
       const options = {
-        "return_url": "http://localhost:5173/dashboard",
-        "website_url": "http://localhost:5173/",
-        "amount": totalAmount*100, 
-        "purchase_order_id": Date.now(),
-        "purchase_order_name": `Order- ${Date.now()}`,
-        }
-
+        return_url: "http://localhost:5173/dashboard",
+        website_url: "http://localhost:5173/",
+        amount: totalAmount * 100,
+        purchase_order_id: Date.now(),
+        purchase_order_name: `Order- ${Date.now()}`,
+      };
 
       const result = await axios.post(
-        'https://dev.khalti.com/api/v2/epayment/initiate/',options,{
+        "https://dev.khalti.com/api/v2/epayment/initiate/",
+        options,
+        {
           headers: {
-            'Authorization': `Key ${process.env.KHALTI_LIVE_SECRET_KEY}`,
+            Authorization: `Key ${process.env.KHALTI_LIVE_SECRET_KEY}`,
             "Content-Type": "application/json",
-          }
+          },
         }
-        
-      )
+      );
 
-      console.log(result.data);
-      return res .status(200).send(result.data)
-
+      if (result.data.pidx) {
+        order.pidx = result.data.pidx;
+        const khaltiResult = await orderService.createOrder(order);
+        khaltiResult.paymentUrl = result.data.payment_url;
+        return res.status(200).json({
+          data: khaltiResult,
+          payment_url: result.data.payment_url,
+        });
+      } else {
+        throw new Error("Khalti payment initiate failed.!");
+      }
+    } else {
+      const newOrder = await orderService.createOrder(order);
+      res
+        .status(201)
+        .json({ data: newOrder, message: "Order created successfully" });
     }
-
-    console.log("order")
-
-    const data = await orderService.createOrder(order);
-
-    console.log(data);
-
-    res.status(200).json({ data, message: "Order created sucessfully" });
   } catch (error) {
     console.log(error.message);
     res
       .status(400)
-      .json({ error: error.message, message: " error while ordering" });
+      .json({ error: error.message, message: "Error creating order" });
   }
 };
 
@@ -111,11 +110,23 @@ const updatePaymentStatus = async (req, res) => {
   }
 };
 
+const updateKhaltiPaymentStatus = async (req, res) => {
+  try {
+    const { pidx, totalAmount } = req.body;
+    const userId = req.user.id;
+    await orderService.updateKhaltiPaymentStatus(pidx, totalAmount, userId);
+    res.status(200).send("Update payment Status");
+  } catch (error) {
+    console.log(error.message);
+    res.status(400).send("Failed to update Payment Status");
+  }
+};
+
 export {
   createOrder,
   getOrderById,
   getOrderByUserId,
   updateOrderStatus,
   updatePaymentStatus,
+  updateKhaltiPaymentStatus,
 };
-
